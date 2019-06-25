@@ -21,11 +21,14 @@ const ChatBox = props => {
             <div
               className={`${
                 chat.receiver !== user.uid ? "balon1" : "balon2"
-              } p-3 m-1`}
+                } p-3 m-1`}
             >
-              {chat.text}
+              {chat.type === "text" ? <div>{chat.text}</div> :
+                <img src={chat.file} alt="file" />
+              }
+
             </div>
-           
+
           </div>
         ))}
         <div id="ccChatBoxEnd" />
@@ -50,7 +53,7 @@ const FriendList = props => {
             key={friend.uid}
             className={`list-group-item ${
               friend.uid === selectedFriend ? "active" : ""
-            }`}
+              }`}
             onClick={() => props.selectFriend(friend.uid)}
           >
             {friend.name}
@@ -67,7 +70,7 @@ const Chat = ({ user }) => {
   const [chatIsLoading, setChatIsLoading] = useState(false);
   const [friendisLoading, setFriendisLoading] = useState(true);
   const [message, setMessage] = useState("");
-
+  const [file, setFile] = useState(null)
 
   useEffect(() => {
     // this useEffect will fetch all users available for chat
@@ -161,6 +164,23 @@ const Chat = ({ user }) => {
     setMessage("");
   };
 
+  const sendFile = () => {
+    var mediaMessage = new CometChat.MediaMessage(
+      selectedFriend,
+      file,
+      CometChat.MESSAGE_TYPE.FILE,
+      CometChat.RECEIVER_TYPE.USER
+    );
+    CometChat.sendMediaMessage(mediaMessage).then(
+      message => {
+        console.log("file sent", message)
+        setChat([...chat, message]);
+      },
+      error => {
+        return error
+      }
+    )
+  }
 
 
   return (
@@ -232,18 +252,21 @@ const Chat = ({ user }) => {
               </div>
               <div className="col-3 m-0 p-1 form-check-inline">
                 <div>
-                <input className="mt-3"
-                  type="file"
-                  id="img_file"
-                  name="img_file"
-                //   onChange={handleFile} Uncomment this line when you define the handleFile function
-                />
+                  <input className="mt-3"
+                    type="file"
+                    id="img_file"
+                    name="img_file"
+                    files={file}
+                    onChange={e => {
+                      setFile(e.target.files[0])
+                    }}
+                  />
                 </div>
                 <div className="mt-3">
-                <button
-                //   onClick={sendFile} Uncomment this line when you define the sendFile function
+                  <button
+                    onClick={sendFile}
                   >
-                  Upload
+                    Upload
                 </button>
                 </div>
               </div>
