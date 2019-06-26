@@ -126,6 +126,12 @@ const Chat = ({ user }) => {
             if (selectedFriend === message.sender.uid) {
               setChat(prevState => [...prevState, message]);
             }
+          },
+          onMediaMessageReceived: message => {
+              console.log("incoming media", {message});
+              if (selectedFriend === message.sender.uid) {
+                setChat(prevState => [...prevState, message]);
+              }
           }
         })
       );
