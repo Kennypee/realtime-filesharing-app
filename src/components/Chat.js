@@ -4,7 +4,7 @@ import { CometChat } from "@cometchat-pro/chat";
 
 const MESSAGE_LISTENER_KEY = "listener-key";
 const limit = 30;
-
+let boxMessage = "Welcome to CometChat"
 const ChatBox = props => {
   const { chat, chatIsLoading, user } = props;
   if (chatIsLoading) {
@@ -21,11 +21,14 @@ const ChatBox = props => {
             <div
               className={`${
                 chat.receiver !== user.uid ? "balon1" : "balon2"
-              } p-3 m-1`}
+                } p-3 m-1`}
             >
-              {chat.text}
+              {chat.type === "text" ? <div>{chat.text}</div> :
+                <img src={chat.file} alt="file" />
+              }
+
             </div>
-           
+
           </div>
         ))}
         <div id="ccChatBoxEnd" />
@@ -50,7 +53,7 @@ const FriendList = props => {
             key={friend.uid}
             className={`list-group-item ${
               friend.uid === selectedFriend ? "active" : ""
-            }`}
+              }`}
             onClick={() => props.selectFriend(friend.uid)}
           >
             {friend.name}
@@ -67,7 +70,7 @@ const Chat = ({ user }) => {
   const [chatIsLoading, setChatIsLoading] = useState(false);
   const [friendisLoading, setFriendisLoading] = useState(true);
   const [message, setMessage] = useState("");
-
+  const [file, setFile] = useState(null)
 
   useEffect(() => {
     // this useEffect will fetch all users available for chat
@@ -98,6 +101,7 @@ const Chat = ({ user }) => {
     // create new listener for incoming message
 
     if (selectedFriend) {
+    boxMessage = "You're chatting with "+ selectedFriend
       let messagesRequest = new CometChat.MessagesRequestBuilder()
         .setUID(selectedFriend)
         .setLimit(limit)
@@ -123,7 +127,15 @@ const Chat = ({ user }) => {
             if (selectedFriend === message.sender.uid) {
               setChat(prevState => [...prevState, message]);
             }
-          }
+          },
+          onMediaMessageReceived: message => {
+            console.log("incoming media", {message});
+            if (selectedFriend === message.sender.uid) {
+              setChat(prevState => [...prevState, message]);
+            }
+            
+        }
+        
         })
       );
     }
@@ -161,6 +173,23 @@ const Chat = ({ user }) => {
     setMessage("");
   };
 
+  const sendFile = () => {
+    var mediaMessage = new CometChat.MediaMessage(
+      selectedFriend,
+      file,
+      CometChat.MESSAGE_TYPE.FILE,
+      CometChat.RECEIVER_TYPE.USER
+    );
+    CometChat.sendMediaMessage(mediaMessage).then(
+      message => {
+        console.log("file sent", message)
+        setChat([...chat, message]);
+      },
+      error => {
+        return error
+      }
+    )
+  }
 
 
   return (
@@ -192,7 +221,7 @@ const Chat = ({ user }) => {
               className="col-lg-8 col-xs-12 bg-light"
               style={{ height: 658 }}>
               <div className="row p-3 bg-white">
-                <h3>Comet Chatbox</h3>
+                <h3>{boxMessage}</h3>
               </div>
               <div
                 className="row pt-5 bg-white"
@@ -232,18 +261,21 @@ const Chat = ({ user }) => {
               </div>
               <div className="col-3 m-0 p-1 form-check-inline">
                 <div>
-                <input className="mt-3"
-                  type="file"
-                  id="img_file"
-                  name="img_file"
-                //   onChange={handleFile} Uncomment this line when you define the handleFile function
-                />
+                  <input className="mt-3 btn btn-primary mr-3"
+                    type="file"
+                    id="img_file"
+                    name="img_file"
+                    files={file}
+                    onChange={e => {
+                      setFile(e.target.files[0])
+                    }}
+                  />
                 </div>
                 <div className="mt-3">
-                <button
-                //   onClick={sendFile} Uncomment this line when you define the sendFile function
+                  <button className="btn btn-outline-secondary rounded border w-100"
+                    onClick={sendFile}
                   >
-                  Upload
+                    Upload
                 </button>
                 </div>
               </div>
