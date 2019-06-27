@@ -73,9 +73,6 @@ const Chat = ({ user }) => {
   const [file, setFile] = useState(null)
 
   useEffect(() => {
-    // this useEffect will fetch all users available for chat
-    // only run on mount
-
     let usersRequest = new CometChat.UsersRequestBuilder()
       .setLimit(limit)
       .build();
@@ -96,10 +93,6 @@ const Chat = ({ user }) => {
     };
   }, []);
   useEffect(() => {
-    // will run when selectedFriend variable value is updated
-    // fetch previous messages, remove listener if any
-    // create new listener for incoming message
-
     if (selectedFriend) {
     boxMessage = "You're chatting with "+ selectedFriend
       let messagesRequest = new CometChat.MessagesRequestBuilder()
@@ -133,9 +126,7 @@ const Chat = ({ user }) => {
             if (selectedFriend === message.sender.uid) {
               setChat(prevState => [...prevState, message]);
             }
-            
         }
-        
         })
       );
     }
@@ -190,7 +181,6 @@ const Chat = ({ user }) => {
       }
     )
   }
-
 
   return (
     <div className="container-fluid">
