@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import MDSpinner from "react-md-spinner";
 import { CometChat } from "@cometchat-pro/chat";
-
 const MESSAGE_LISTENER_KEY = "listener-key";
 const limit = 30;
+
 let boxMessage = "Welcome to CometChat"
 const ChatBox = props => {
   const { chat, chatIsLoading, user } = props;
@@ -26,9 +26,7 @@ const ChatBox = props => {
               {chat.type === "text" ? <div>{chat.text}</div> :
                 <img src={chat.file} alt="file" />
               }
-
             </div>
-
           </div>
         ))}
         <div id="ccChatBoxEnd" />
