@@ -116,6 +116,7 @@ const Chat = ({ user }) => {
             console.log("Incoming Message Log", { message });
             if (selectedFriend === message.sender.uid) {
               setChat(prevState => [...prevState, message]);
+              scrollToBottom();
             }
           },
           onMediaMessageReceived: message => {
