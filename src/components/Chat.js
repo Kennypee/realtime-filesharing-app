@@ -29,7 +29,6 @@ const ChatBox = props => {
             </div>
           </div>
         ))}
-        <div id="ccChatBoxEnd" />
       </div>
     );
   }
@@ -117,6 +116,7 @@ const Chat = ({ user }) => {
             console.log("Incoming Message Log", { message });
             if (selectedFriend === message.sender.uid) {
               setChat(prevState => [...prevState, message]);
+              scrollToBottom();
             }
           },
           onMediaMessageReceived: message => {
@@ -130,8 +130,8 @@ const Chat = ({ user }) => {
     }
   }, [selectedFriend]);
   const scrollToBottom = () => {
-    let node = document.getElementById("ccChatBoxEnd");
-    node.scrollIntoView();
+    let chatContainer = document.getElementById('chat-container')
+    chatContainer && chatContainer.scrollTo(0, chatContainer.scrollHeight)
   };
 
   const selectFriend = uid => {
@@ -153,12 +153,12 @@ const Chat = ({ user }) => {
       message => {
         console.log("Message sent successfully:", message);
         setChat([...chat, message]);
+        scrollToBottom();
       },
       error => {
         console.log("Message sending failed with error:", error);
       }
     );
-    scrollToBottom();
     setMessage("");
   };
 
@@ -212,6 +212,7 @@ const Chat = ({ user }) => {
                 <h3>{boxMessage}</h3>
               </div>
               <div
+                id="chat-container"
                 className="row pt-5 bg-white"
                 style={{ height: 530, overflow: "auto" }}
               >
