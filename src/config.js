@@ -1,6 +1,7 @@
 const config = {
-  appID: '3154df424378c8',
-  apiKey: 'e6d07a18a4a79adbc24c02819c66fb555fd5ee2b',
+  // Be sure to set the key scope to fullAccess
+  appID: 'YOUR_APP_ID',
+  apiKey: 'YOUR_API_KEY',
   };
       
   export default config;
