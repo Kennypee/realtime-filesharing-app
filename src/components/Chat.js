@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import MDSpinner from "react-md-spinner";
 import { CometChat } from "@cometchat-pro/chat";
-const MESSAGE_LISTENER_KEY = "listener-key";
-const limit = 30;
+import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+const limit = 30;
+const MESSAGE_LISTENER_KEY = "listener-key";
 let boxMessage = "Welcome to CometChat"
 const ChatBox = props => {
   const { chat, chatIsLoading, user } = props;
@@ -36,6 +39,12 @@ const ChatBox = props => {
 
 const FriendList = props => {
   const { friends, friendisLoading, selectedFriend } = props;
+  if (selectedFriend) {
+    if (document.getElementById("friends")) {
+      let friendsNode = document.getElementById("friends")
+      friendsNode.parentNode.removeChild(friendsNode)
+    }
+  }
   if (friendisLoading) {
     return (
       <div className="col-xl-12 my-auto text-center">
@@ -91,7 +100,7 @@ const Chat = ({ user }) => {
   }, []);
   useEffect(() => {
     if (selectedFriend) {
-    boxMessage = "You're chatting with "+ selectedFriend
+      boxMessage = "You're chatting with " + selectedFriend
       let messagesRequest = new CometChat.MessagesRequestBuilder()
         .setUID(selectedFriend)
         .setLimit(limit)
@@ -120,11 +129,11 @@ const Chat = ({ user }) => {
             }
           },
           onMediaMessageReceived: message => {
-            console.log("incoming media", {message});
+            console.log("incoming media", { message });
             if (selectedFriend === message.sender.uid) {
               setChat(prevState => [...prevState, message]);
             }
-        }
+          }
         })
       );
     }
@@ -140,27 +149,42 @@ const Chat = ({ user }) => {
     setChatIsLoading(true);
   };
 
+
   const handleSubmit = event => {
-    event.preventDefault();
-    let textMessage = new CometChat.TextMessage(
-      selectedFriend,
-      message,
-      CometChat.MESSAGE_TYPE.TEXT,
-      CometChat.RECEIVER_TYPE.USER
-    );
-    console.log(textMessage);
-    CometChat.sendMessage(textMessage).then(
-      message => {
-        console.log("Message sent successfully:", message);
-        setChat([...chat, message]);
-        scrollToBottom();
-      },
-      error => {
-        console.log("Message sending failed with error:", error);
-      }
-    );
-    setMessage("");
+    if (file) {
+      sendFile()
+    } else {
+      event.preventDefault();
+      let textMessage = new CometChat.TextMessage(
+        selectedFriend,
+        message,
+        CometChat.MESSAGE_TYPE.TEXT,
+        CometChat.RECEIVER_TYPE.USER
+      );
+      console.log(textMessage);
+      CometChat.sendMessage(textMessage).then(
+        message => {
+          console.log("Message sent successfully:", message);
+          setChat([...chat, message]);
+          scrollToBottom();
+        },
+        error => {
+          console.log("Message sending failed with error:", error);
+        }
+      );
+      setMessage("");
+    }
+
   };
+
+  // const sendTextOrFile = () => {
+  //   // console.log("FOnt Awesome is so cool")
+  //   if (file) {
+  //     sendFile()
+  //   } else {
+  //     handleSubmit()
+  //   }
+  // }
 
   const sendFile = () => {
     var mediaMessage = new CometChat.MediaMessage(
@@ -185,13 +209,15 @@ const Chat = ({ user }) => {
       <div className="row">
         <div className="col-md-2" />
         <div className="col-md-8 h-100pr border rounded">
-          <div className="row">
-            <div
-              className="col-lg-4 col-xs-12 bg-light"
-              style={{ height: 658 }}
+          <div id="parent" className="row">
+            <div id="friends"
+              className=" col-lg-8 col-xs-12 bg-light"
+              style={{
+                height: 658
+              }}
             >
               <div className="row p-3">
-                <h4>Your Friends</h4>
+                <h4>Select a friend to chat with</h4>
               </div>
               <div
                 className="row ml-0 mr-0 h-75 bg-white border rounded"
@@ -222,14 +248,15 @@ const Chat = ({ user }) => {
                   user={user}
                 />
               </div>
+
               <div
                 className="row bg-light"
                 style={{ bottom: 0, width: "100%" }}>
-                <form className="row m-0 p-0 w-100 " onSubmit={handleSubmit}>
+                <form className="row1 m-0 p-0 w-100" onSubmit={handleSubmit}>
                   <div className="col-9 m-0 p-1">
                     <input
                       id="text"
-                      className="mw-100 border rounded form-control"
+                      className=" in mw-100 border rounded form-control"
                       type="text"
                       onChange={event => {
                         setMessage(event.target.value);
@@ -238,36 +265,24 @@ const Chat = ({ user }) => {
                       placeholder="Type a message..."
                     />
                   </div>
-                  <div className="col-3 m-0 p-1 form-check-inline">
-                    <button
-                      className="btn btn-outline-secondary rounded border w-100"
-                      title="Send"
-                      style={{ paddingRight: 16 }}>
-                      Send
+                  <div>
+                    <span class="btn btn-outline-secondary rounded border w-100 btn-file">
+                      <FontAwesomeIcon icon={faPaperclip} /><input type="file" />
+                    </span>
+                  </div>
+                  <div>
+                    <button className="sfile btn btn-outline-secondary rounded border w-100"
+                      onClick={sendFile}
+                    >
+                      <FontAwesomeIcon icon={faPaperPlane} />
                     </button>
                   </div>
                 </form>
               </div>
-              <div className="col-3 m-0 p-1 form-check-inline">
-                <div>
-                  <input className="mt-3 btn btn-primary mr-3"
-                    type="file"
-                    id="img_file"
-                    name="img_file"
-                    files={file}
-                    onChange={e => {
-                      setFile(e.target.files[0])
-                    }}
-                  />
-                </div>
+              {/* <div className="">
                 <div className="mt-3">
-                  <button className="btn btn-outline-secondary rounded border w-100"
-                    onClick={sendFile}
-                  >
-                    Upload
-                </button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

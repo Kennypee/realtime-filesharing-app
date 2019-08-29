@@ -1,8 +1,27 @@
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem 1.5rem;
+  font: 1rem/1.5 "PT Sans", Arial, sans-serif;
+  color: #5a5a5a;
+}
+
+
 .container {
   margin-top: 5%;
   margin-bottom: 5%;
 }
-    
+#btnSearch,#btnClear{
+    display: inline-block;
+    vertical-align: top;
+}
 .login-form {
   padding: 5%;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
@@ -32,12 +51,6 @@
   background: #f4f7f9;
   border-radius: 10px;
 }
-
-
-.container {
-  margin-top: 5%;
-  margin-bottom: 5%;
-}
     
 .login-form {
   padding: 5%;
@@ -56,15 +69,54 @@
 .message {
   overflow: hidden;
 }
-    
-.balon1 {
-  float: right;
-  background: #35cce6;
-  border-radius: 10px;
+	 /* .card-footer{
+		border-radius: 0 0 10px 10px !important;
+			border-top: 0 !important;
+  } */
+
+.upload-button::-webkit-file-upload-button {
+  visibility: visible;
 }
-    
-.balon2 {
-  float: left;
-  background: #f4f7f9;
-  border-radius: 10px;
+/* @media (min-width: 992px) */
+.col-lg-8 {
+    flex: 0 0 100.666667%;
+    max-width: 100%;
+}
+.row1 {
+    display: flex;
+    /* flex-wrap: wrap; */
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.in{
+  padding-top: 1em
+}
+
+.init{
+  padding-top: 1em
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.5em;
+    margin-left: 0.5em
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;   
+    cursor: inherit;
+    display: block;
+}
+.sfile{
+  margin-left: 1em;
+  margin-top: 0.5em
 }
